@@ -19,9 +19,12 @@
 
   <!-- 页面元数据 -->
   
-  <title>全新版本的博客！ - gniqus</title>
+  <title>再解全排列的思考 - gniqus</title>
   
 
+  
+    <meta name="description" content="今天刷剑指offer，写到了剑指 Offer 38. 字符串的排列，发现自己全排列问题并没有完全的掌握。
+事实上在几个月前自己就为全排列问题专门写了博客，用到了深搜和广搜两种方法，当时觉得全排列对自己来说已经不成问题了，结果今天做到全排列相关的题的时候并不能在第一时间开始动手就写（但我相信给我点时间一定能写出来）...">
   
 
   <!-- feed -->
@@ -73,7 +76,7 @@
         
         <a class="title flat-box" target="_self" href='/'>
           
-            <img no-lazy class='logo' src='img/logo.png'/>
+            <img no-lazy class='logo' src='/img/logo.png'/>
           
           
           
@@ -393,7 +396,7 @@
     
     
       <h1 class="title">
-        全新版本的博客！
+        再解全排列的思考
       </h1>
       <div class='new-meta-box'>
         
@@ -401,7 +404,7 @@
             
 <div class='new-meta-item author'>
   <a class='author' href="/" rel="nofollow">
-    <img no-lazy src="img/avatar.png">
+    <img no-lazy src="/img/avatar.png">
     <p>gniqus</p>
   </a>
 </div>
@@ -410,6 +413,13 @@
         
           
             
+  <div class='new-meta-item category'>
+    <a class='notlink'>
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <a class="category-link" href="/categories/leetcode/">leetcode</a>
+    </a>
+  </div>
+
 
           
         
@@ -428,7 +438,7 @@
   <div class="new-meta-item browse leancloud">
     <a class='notlink'>
       
-      <div id="lc-pv" data-title="全新版本的博客！" data-path="/2021/01/09/news/">
+      <div id="lc-pv" data-title="再解全排列的思考" data-path="/2021/01/09/%E5%86%8D%E8%A7%A3%E5%85%A8%E6%8E%92%E5%88%97%E7%9A%84%E6%80%9D%E8%80%83/">
         <i class="fas fa-eye fa-fw" aria-hidden="true"></i>
         <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span>
         次浏览
@@ -445,7 +455,25 @@
 
 
   
-  <p>这已经不知道是自己的第几版的博客了，之所以又搞一版，主要是博客写不太下去了，重新换个主题又来劲了。希望这次博客上记录的不只是代码什么的，也希望这是自己的最后一版。为了这个还特别的换了个Github的用户名。准备再买个域名，之前写的所有的内容也都传到服务器上，当手册来用，就不再记录在Github Page上了！</p>
+  <p>今天刷剑指offer，写到了<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/zi-fu-chuan-de-pai-lie-lcof/">剑指 Offer 38. 字符串的排列</a>，发现自己全排列问题并没有完全的掌握。</p>
+<p>事实上在几个月前自己就为全排列问题专门写了博客，用到了深搜和广搜两种方法，当时觉得全排列对自己来说已经不成问题了，结果今天做到全排列相关的题的时候并不能在第一时间开始动手就写（<del>但我相信给我点时间一定能写出来</del>）。</p>
+<p>上学期的算法课上有讲到全排列问题，当时看到书上的解法才发现自己之前的代码无论在时间还是空间上都烂极了，于是决定再写一篇全排列的博客巩固一下。</p>
+<p>之前的全排列博客：<a target="_blank" rel="noopener" href="https://juejin.cn/post/6861160844521603080">深搜求解全排列</a>，<a target="_blank" rel="noopener" href="https://juejin.cn/post/6861529337809534989">广搜求解全排列</a>。</p>
+<p>本文涉及的两道题目：<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/permutations/">leetcode 46. 全排列</a>，<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/permutations-ii/">leetcode 47. 全排列 II</a>。</p>
+<a id="more"></a>
+
+<h2 id="无重复元素的全排列"><a href="#无重复元素的全排列" class="headerlink" title="无重复元素的全排列"></a>无重复元素的全排列</h2><p><img src="/img/permutations1.png" class="lazyload" data-srcset="/img/permutations1.png" srcset="data:image/png;base64,666"></p>
+<p>考虑数组<code>[1,2,3,4]</code>，如上图所示，每个元素都可以作为排列的起始元素，那么就可以将整个问题的解划分为4类。而每一个类的解集即该类起始元素与<strong>剩余其余元素的全排列</strong>的组合。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; result;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; nums;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">help</span><span class="params">(<span class="keyword">int</span> begin, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (begin == end) &#123;</span><br><span class="line">            result.push_back(nums);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = begin; i &lt; end; ++i) &#123;</span><br><span class="line">            swap(nums[begin], nums[i]);</span><br><span class="line">            help(begin+<span class="number">1</span>, end);</span><br><span class="line">            swap(nums[begin], nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; permute(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums) &#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;nums = nums;</span><br><span class="line">        help(<span class="number">0</span>, nums.size());</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>上面的代码中，循环中遍历每一个元素，与数组的起始元素交换，接着将剩余元素通过help函数做全排列，当问题规模为0时，此时nums处于一个排列状态下，将其并入result结果集中。</p>
+<h2 id="有重复元素的全排列"><a href="#有重复元素的全排列" class="headerlink" title="有重复元素的全排列"></a>有重复元素的全排列</h2><p><img src="/img/permutations2.png" class="lazyload" data-srcset="/img/permutations2.png" srcset="data:image/png;base64,666"></p>
+<p>考虑数组<code>[1,1,3,4]</code>，如上图所示，整个结果集应该是划分为3类而不是4类，如果是4类即其中两类都以1开始，那么结果集中就会有相同的排列。问题的难点即在于如何去重。这道题目我的解法和leetcode官方题解的解法是不一样的（<del>自认为自己的比题解的好</del>），我的解法继承了无重复元素全排列的代码，通过visited数组去重。</p>
+<p>通过上面的图片不难想到，只要在遍历过程中加上适当的筛选条件，让每个能够和起始元素交换的元素彼此之间不重复即可达到去重的目的，这里使用<code>visited[n] = 1</code>表示值等于n的元素已经与起始元素交换过，注意这里的n不是下标而是元素值。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; result;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; nums;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">help</span><span class="params">(<span class="keyword">int</span> begin, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (begin == end) &#123;</span><br><span class="line">            result.push_back(nums);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">visited</span><span class="params">(<span class="number">21</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = begin; i &lt; end; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (visited[nums[i]+<span class="number">10</span>]) <span class="keyword">continue</span>;</span><br><span class="line">            visited[nums[i]+<span class="number">10</span>] = <span class="number">1</span>;</span><br><span class="line">            swap(nums[begin], nums[i]);</span><br><span class="line">            help(begin+<span class="number">1</span>, end);</span><br><span class="line">            swap(nums[begin], nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; permuteUnique(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums) &#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;nums = nums;</span><br><span class="line">        help(<span class="number">0</span>, nums.size());</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>本题目给出了<code>-10 &lt;= nums[i] &lt;= 10</code>，因此<code>vector&lt;int&gt; visited(21, 0);</code>，在标记时需要在<code>[-10,10]</code>与<code>[0,20]</code>之间做一个转换。</p>
+<p>在得到正确解法之前，我曾陷入一个误区，试图不通过标记数组来做到起始元素的去重。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sort(nums.begin(), nums.end());</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = begin; i &lt; end; ++i) &#123;</span><br><span class="line">    <span class="keyword">if</span> (i &gt; <span class="number">0</span> &amp;&amp; nums[i] == nums[i<span class="number">-1</span>]) &#123;</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码确实做到了每次循环都是不同的元素，用来与起始元素交换，但是交换之后剩余的元素已经不满足有序的性质了，而help函数对于排列区间确是要求有序，我也曾想过通过临时数组作为函数的参数，但不仅空间开销大，而且代码量和理解难度上也都不如使用标记数组。</p>
 
   
   
@@ -463,7 +491,7 @@
               
             
               
-                <p>本文永久链接是：<a href=http://example.com/2021/01/09/news/>http://example.com/2021/01/09/news/</a></p>
+                <p>本文永久链接是：<a href=http://example.com/2021/01/09/%E5%86%8D%E8%A7%A3%E5%85%A8%E6%8E%92%E5%88%97%E7%9A%84%E6%80%9D%E8%80%83/>http://example.com/2021/01/09/%E5%86%8D%E8%A7%A3%E5%85%A8%E6%8E%92%E5%88%97%E7%9A%84%E6%80%9D%E8%80%83/</a></p>
               
             
           </blockquote>
@@ -480,10 +508,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-01-09T22:47:34+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-01-10T03:13:17+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Jan 9, 2021</p>
+    <p>更新于：Jan 10, 2021</p>
   </a>
 </div>
 
@@ -502,7 +530,11 @@
       
         <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
           
-          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://example.com/2021/01/09/news/&title=全新版本的博客！ - gniqus&summary="
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://example.com/2021/01/09/%E5%86%8D%E8%A7%A3%E5%85%A8%E6%8E%92%E5%88%97%E7%9A%84%E6%80%9D%E8%80%83/&title=再解全排列的思考 - gniqus&summary=今天刷剑指offer，写到了剑指 Offer 38. 字符串的排列，发现自己全排列问题并没有完全的掌握。
+事实上在几个月前自己就为全排列问题专门写了博客，用到了深搜和广搜两种方法，当时觉得全排列对自己来说已经不成问题了，结果今天做到全排列相关的题的时候并不能在第一时间开始动手就写（但我相信给我点时间一定能写出来）。
+上学期的算法课上有讲到全排列问题，当时看到书上的解法才发现自己之前的代码无论在时间还是空间上都烂极了，于是决定再写一篇全排列的博客巩固一下。
+之前的全排列博客：深搜求解全排列，广搜求解全排列。
+本文涉及的两道题目：leetcode 46. 全排列，leetcode 47. 全排列 II。"
           
           >
           
@@ -514,7 +546,11 @@
       
         <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
           
-          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://example.com/2021/01/09/news/&title=全新版本的博客！ - gniqus&summary="
+          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://example.com/2021/01/09/%E5%86%8D%E8%A7%A3%E5%85%A8%E6%8E%92%E5%88%97%E7%9A%84%E6%80%9D%E8%80%83/&title=再解全排列的思考 - gniqus&summary=今天刷剑指offer，写到了剑指 Offer 38. 字符串的排列，发现自己全排列问题并没有完全的掌握。
+事实上在几个月前自己就为全排列问题专门写了博客，用到了深搜和广搜两种方法，当时觉得全排列对自己来说已经不成问题了，结果今天做到全排列相关的题的时候并不能在第一时间开始动手就写（但我相信给我点时间一定能写出来）。
+上学期的算法课上有讲到全排列问题，当时看到书上的解法才发现自己之前的代码无论在时间还是空间上都烂极了，于是决定再写一篇全排列的博客巩固一下。
+之前的全排列博客：深搜求解全排列，广搜求解全排列。
+本文涉及的两道题目：leetcode 46. 全排列，leetcode 47. 全排列 II。"
           
           >
           
@@ -526,7 +562,11 @@
       
         <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
           
-          target="_blank" href="http://service.weibo.com/share/share.php?url=http://example.com/2021/01/09/news/&title=全新版本的博客！ - gniqus&summary="
+          target="_blank" href="http://service.weibo.com/share/share.php?url=http://example.com/2021/01/09/%E5%86%8D%E8%A7%A3%E5%85%A8%E6%8E%92%E5%88%97%E7%9A%84%E6%80%9D%E8%80%83/&title=再解全排列的思考 - gniqus&summary=今天刷剑指offer，写到了剑指 Offer 38. 字符串的排列，发现自己全排列问题并没有完全的掌握。
+事实上在几个月前自己就为全排列问题专门写了博客，用到了深搜和广搜两种方法，当时觉得全排列对自己来说已经不成问题了，结果今天做到全排列相关的题的时候并不能在第一时间开始动手就写（但我相信给我点时间一定能写出来）。
+上学期的算法课上有讲到全排列问题，当时看到书上的解法才发现自己之前的代码无论在时间还是空间上都烂极了，于是决定再写一篇全排列的博客巩固一下。
+之前的全排列博客：深搜求解全排列，广搜求解全排列。
+本文涉及的两道题目：leetcode 46. 全排列，leetcode 47. 全排列 II。"
           
           >
           
@@ -582,6 +622,126 @@
 
 
 
+  <section class="widget toc-wrapper shadow desktop mobile" id="toc-div" >
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E7%9A%84%E5%85%A8%E6%8E%92%E5%88%97"><span class="toc-text">无重复元素的全排列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0%E7%9A%84%E5%85%A8%E6%8E%92%E5%88%97"><span class="toc-text">有重复元素的全排列</span></a></li></ol>
+    </div>
+  </section>
+
+
+  
+
+  
+    
+    
+
+<section class="widget blogger shadow desktop mobile">
+  <div class='content'>
+    
+      
+        <a class='avatar flat-box rectangle' href='/about/'>
+          <img no-lazy src='/img/avatar.png'/>
+        </a>
+      
+    
+    
+      <div class='text'>
+        
+        
+        
+          <p><span id="jinrishici-sentence">gniqus</span></p>
+          <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+        
+      </div>
+    
+    
+      <div class="social-wrapper">
+        
+          
+            <a href="/"
+              class="social fas fa-rss flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+              
+            </a>
+          
+        
+          
+            <a href="mailto:1164919034@qq.com"
+              class="social fas fa-envelope flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+              
+            </a>
+          
+        
+          
+            <a href="https://github.com/gniqus/"
+              class="social fab fa-github flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+              
+            </a>
+          
+        
+          
+            <a href="/"
+              class="social fas fa-headphones-alt flat-btn"
+              target="_blank"
+              rel="external nofollow noopener noreferrer">
+              
+            </a>
+          
+        
+      </div>
+    
+  </div>
+</section>
+
+  
+
+  
+    
+    
+  
+
+  <section class="widget category shadow desktop">
+    
+  <header>
+    
+      <a href='/blog/categories/'><i class="fas fa-folder-open fa-fw" aria-hidden="true"></i><span class='name'>文章分类</span></a>
+    
+  </header>
+
+
+    <div class='content'>
+      <ul class="entry navigation">
+        
+          <li><a class="flat-box"
+            title="/categories/leetcode/" href="/categories/leetcode/"
+            id="categoriesleetcode"
+            ><div class='name'>leetcode</div><div class='badge'>(1)</div></a></li>
+        
+      </ul>
+    </div>
+  </section>
+
+
+  
+
+  
+    
+    
+
+  
 
   
 
@@ -598,7 +758,7 @@
 <script>
   window.pdata={}
   pdata.ispage=true;
-  pdata.postTitle="全新版本的博客！";
+  pdata.postTitle="再解全排列的思考";
   pdata.commentPath="";
   pdata.commentPlaceholder="";
 
