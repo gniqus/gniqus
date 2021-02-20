@@ -5,9 +5,7 @@
   <!-- SEO相关 -->
   
     
-      
-        <meta name="robots" content="index,follow">
-      
+      <meta name="robots" content="noindex,follow">
     
   
   <!-- 渲染优化 -->
@@ -23,7 +21,7 @@
 
   <!-- 页面元数据 -->
   
-  <title>gniqus</title>
+  <title>Category: mysql - gniqus</title>
   
 
   
@@ -60,7 +58,7 @@
 <body>
   
 
-<header id="l_header" class="l_header auto shadow blur " style='opacity: 0' >
+<header id="l_header" class="l_header auto shadow blur show" style='opacity: 0' >
   <div class='container'>
   <div id='wrapper'>
     <div class='nav-sub'>
@@ -311,7 +309,7 @@
     <div id="l_cover">
   
     
-        <div id="full" class='cover-wrapper  dock' style="display: ;">
+        <div id="full" class='cover-wrapper  dock' style="display: none;">
           
             <div class='cover-bg lazyload placeholder' data-bg="https://cdn.jsdelivr.net/gh/volantis-x/cdn-wallpaper-minimalist/2020/033.jpg"></div>
           
@@ -376,7 +374,7 @@
   </div>
 </div>
 
-          <div id="scroll-down" style="display: ;"><i class="fa fa-chevron-down scroll-down-effects"></i></div>
+          <div id="scroll-down" style="display: none;"><i class="fa fa-chevron-down scroll-down-effects"></i></div>
         </div>
     
   
@@ -386,16 +384,14 @@
       <div class='body-wrapper' id="pjax-container">
         
 
+
 <div class='l_main'>
   
+    
+      
   <section class="post-list">
     
       
-        
-          
-        
-        
-          
         
           
         
@@ -447,54 +443,6 @@
           </div>
         
       
-        
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow">
-  
-  
-  
-  
-    
-    <h2 class="article-title" >
-      <a href="/2021/01/09/%E5%86%8D%E8%A7%A3%E5%85%A8%E6%8E%92%E5%88%97%E7%9A%84%E6%80%9D%E8%80%83/">
-        再解全排列的思考
-      </a>
-    </h2>
-  
-  <div class='md'>
-    
-      <p>今天刷剑指offer，写到了<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/zi-fu-chuan-de-pai-lie-lcof/">剑指 Offer 38. 字符串的排列</a>，发现自己全排列问题并没有完全的掌握。</p>
-<p>事实上在几个月前自己就为全排列问题专门写了博客，用到了深搜和广搜两种方法，当时觉得全排列对自己来说已经不成问题了，结果今天做到全排列相关的题的时候并不能在第一时间开始动手就写（<del>但我相信给我点时间一定能写出来</del>）。</p>
-<p>上学期的算法课上有讲到全排列问题，当时看到书上的解法才发现自己之前的代码无论在时间还是空间上都烂极了，于是决定再写一篇全排列的博客巩固一下。</p>
-<p>之前的全排列博客：<a target="_blank" rel="noopener" href="https://juejin.cn/post/6861160844521603080">深搜求解全排列</a>，<a target="_blank" rel="noopener" href="https://juejin.cn/post/6861529337809534989">广搜求解全排列</a>。</p>
-<p>本文涉及的两道题目：<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/permutations/">leetcode 46. 全排列</a>，<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/permutations-ii/">leetcode 47. 全排列 II</a>。</p>
-    
-  </div>
-  
-    <div class='meta-v3' line_style='solid'>
-      <div>
-        
-        <time>2021-01-09</time>
-        
-          <span class="dot"></span>
-          <a class="category-link" href="/categories/leetcode/">leetcode</a>
-        
-      </div>
-      
-        <div>
-          <a class='readmore' href='/2021/01/09/%E5%86%8D%E8%A7%A3%E5%85%A8%E6%8E%92%E5%88%97%E7%9A%84%E6%80%9D%E8%80%83/'>
-            Read More
-          </a>
-        </div>
-      
-    </div>
-  
-
-</div>
-
-          </div>
-        
-      
     
   </section>
   
@@ -502,6 +450,8 @@
   
 
 
+    
+  
 </div>
 <aside class='l_side'>
   
@@ -620,7 +570,6 @@
 </aside>
 
 
-
         
         
           <!--此文件用来存放一些不方便取值的变量-->
@@ -635,7 +584,7 @@
 
   var l_header=document.getElementById("l_header");
   
-  l_header.classList.remove("show");
+  l_header.classList.add("show");
   
 </script>
 
