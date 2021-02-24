@@ -5,8 +5,6 @@
   <!-- SEO相关 -->
   
     
-      <meta name="robots" content="noindex,follow">
-    
   
   <!-- 渲染优化 -->
   <meta http-equiv='x-dns-prefetch-control' content='on' />
@@ -21,9 +19,11 @@
 
   <!-- 页面元数据 -->
   
-  <title>Archive - gniqus</title>
+  <title>我终于开始搞redis了 - gniqus</title>
   
 
+  
+    <meta name="description" content="redis这个东西貌似我大一就看了，因为用不到，看过就忘了。大二知道redis比较重要，也看了但是没做笔记，过后就忘了。后来实习的时候一边实习一边看redis，也打算做笔记来着，不过因为没有特别集中的时间所以也鸽了。再不把redis搞完真的不行了，后端必考redis呀，我佛了。">
   
 
   <!-- feed -->
@@ -58,7 +58,7 @@
 <body>
   
 
-<header id="l_header" class="l_header auto shadow blur " style='opacity: 0' >
+<header id="l_header" class="l_header auto shadow blur show" style='opacity: 0' >
   <div class='container'>
   <div id='wrapper'>
     <div class='nav-sub'>
@@ -309,7 +309,7 @@
     <div id="l_cover">
   
     
-        <div id="half" class='cover-wrapper  dock' style="display: ;">
+        <div id="full" class='cover-wrapper post dock' style="display: none;">
           
             <div class='cover-bg lazyload placeholder' data-bg="img/paper.png"></div>
           
@@ -385,82 +385,261 @@
         
 
 <div class='l_main'>
-	
-	  <article id="arc" class="post article white-box reveal shadow">
-			
-			
-				
-				
-					
-						
-						<h2>2021</h2>
-					
-						<div class='timenode'>
-								<a class="meta" href="/2021/02/24/%E5%89%91%E6%8C%87offer/">
-									<time>02-24</time>
-									
-										剑指offer
-									
-									
-									
-									
-								</a>
-						</div>
-				
-			
-				
-				
-					
-						<div class='timenode'>
-								<a class="meta" href="/2021/02/22/%E6%88%91%E7%BB%88%E4%BA%8E%E5%BC%80%E5%A7%8B%E6%90%9Eredis%E4%BA%86/">
-									<time>02-22</time>
-									
-										我终于开始搞redis了
-									
-									
-									
-									
-								</a>
-						</div>
-				
-			
-				
-				
-					
-						<div class='timenode'>
-								<a class="meta" href="/2021/02/20/%E4%B8%BB%E9%94%AE%E7%9A%84%E8%AE%BE%E8%AE%A1%E9%97%AE%E9%A2%98/">
-									<time>02-20</time>
-									
-										主键的设计问题
-									
-									
-									
-									
-								</a>
-						</div>
-				
-			
-				
-				
-					
-						<div class='timenode'>
-								<a class="meta" href="/2021/01/09/%E5%86%8D%E8%A7%A3%E5%85%A8%E6%8E%92%E5%88%97%E7%9A%84%E6%80%9D%E8%80%83/">
-									<time>01-09</time>
-									
-										再解全排列的思考
-									
-									
-									
-									
-								</a>
-						</div>
-				
-			
-	  </article>
-	
+  <article class="article post white-box reveal md shadow article-type-post" id="post" itemscope itemprop="blogPost">
+  
+
+
+  
+  <div class="article-meta" id="top">
+    
+    
+    
+      <h1 class="title">
+        我终于开始搞redis了
+      </h1>
+      <div class='new-meta-box'>
+        
+          
+            
+<div class='new-meta-item author'>
+  <a class='author' href="/" rel="nofollow">
+    <img no-lazy src="/img/avatar.png">
+    <p>gniqus</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  <div class='new-meta-item category'>
+    <a class='notlink'>
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <a class="category-link" href="/categories/redis/">redis</a>
+    </a>
+  </div>
+
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：Feb 22, 2021</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  <div class="new-meta-item browse leancloud">
+    <a class='notlink'>
+      
+      <div id="lc-pv" data-title="我终于开始搞redis了" data-path="/2021/02/22/%E6%88%91%E7%BB%88%E4%BA%8E%E5%BC%80%E5%A7%8B%E6%90%9Eredis%E4%BA%86/">
+        <i class="fas fa-eye fa-fw" aria-hidden="true"></i>
+        <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span>
+        次浏览
+      </div>
+    </a>
+  </div>
+
+
+          
+        
+      </div>
+    
+  </div>
+
+
+  
+  <p>redis这个东西貌似我大一就看了，因为用不到，看过就忘了。大二知道redis比较重要，也看了但是没做笔记，过后就忘了。后来实习的时候一边实习一边看redis，也打算做笔记来着，不过因为没有特别集中的时间所以也鸽了。再不把redis搞完真的不行了，后端必考redis呀，我佛了。</p>
+<a id="more"></a>
+
+<p>redis以solt作为数据存储单元，固定有16384个solt，存取key时采用crc16算法取值后对16384取余确定solt。</p>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><p><a target="_blank" rel="noopener" href="https://www.redis.net.cn/order">redis命令手册</a></p>
+<ol>
+<li>key: exists | expire | ttl | del | keys</li>
+<li>string: set | get | setex | setnx | incr | incrby</li>
+<li>hash: hset | hget | hdel | hmset | hmget</li>
+<li>list: rpush | lpush | lrange | lrem</li>
+</ol>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ol>
+<li>String</li>
+<li>Hash</li>
+<li>List</li>
+<li>Set</li>
+<li>Sorted Set</li>
+<li>Bitmap</li>
+<li>Hyperloglog</li>
+<li>Geospatial Index</li>
+<li>Stream</li>
+</ol>
+
+  
+  
+    
+    <div class='footer'>
+      
+      
+      
+        <div class='copyright'>
+          <blockquote>
+            
+              
+                <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
+              
+            
+          </blockquote>
+        </div>
+      
+      
+    </div>
+  
+  
+    
+
+
+  <div class='article-meta' id="bottom">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-02-24T23:13:41+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Feb 24, 2021</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://example.com/2021/02/22/%E6%88%91%E7%BB%88%E4%BA%8E%E5%BC%80%E5%A7%8B%E6%90%9Eredis%E4%BA%86/&title=我终于开始搞redis了 - gniqus&summary=redis这个东西貌似我大一就看了，因为用不到，看过就忘了。大二知道redis比较重要，也看了但是没做笔记，过后就忘了。后来实习的时候一边实习一边看redis，也打算做笔记来着，不过因为没有特别集中的时间所以也鸽了。再不把redis搞完真的不行了，后端必考redis呀，我佛了。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" srcset="data:image/png;base64,666">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://example.com/2021/02/22/%E6%88%91%E7%BB%88%E4%BA%8E%E5%BC%80%E5%A7%8B%E6%90%9Eredis%E4%BA%86/&title=我终于开始搞redis了 - gniqus&summary=redis这个东西貌似我大一就看了，因为用不到，看过就忘了。大二知道redis比较重要，也看了但是没做笔记，过后就忘了。后来实习的时候一边实习一边看redis，也打算做笔记来着，不过因为没有特别集中的时间所以也鸽了。再不把redis搞完真的不行了，后端必考redis呀，我佛了。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qzone.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qzone.png" srcset="data:image/png;base64,666">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://service.weibo.com/share/share.php?url=http://example.com/2021/02/22/%E6%88%91%E7%BB%88%E4%BA%8E%E5%BC%80%E5%A7%8B%E6%90%9Eredis%E4%BA%86/&title=我终于开始搞redis了 - gniqus&summary=redis这个东西貌似我大一就看了，因为用不到，看过就忘了。大二知道redis比较重要，也看了但是没做笔记，过后就忘了。后来实习的时候一边实习一边看redis，也打算做笔记来着，不过因为没有特别集中的时间所以也鸽了。再不把redis搞完真的不行了，后端必考redis呀，我佛了。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" srcset="data:image/png;base64,666">
+          
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </div>
+
+
+  
+  
+
+  
+    <div class="prev-next">
+      
+        <a class='prev' href='/2021/02/24/%E5%89%91%E6%8C%87offer/'>
+          <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>剑指offer</p>
+          <p class='content'>两个月前就已经刷过一边剑指offer了，跳过了几道自己觉得很刁钻的题目，整体感觉就是题目不算多，大部分也都比较经典。自己大概四五天就差不多刷完了。现在备战暑期实习准备再认真刷一边，并且好好记录下...</p>
+        </a>
+      
+      
+        <a class='next' href='/2021/02/20/%E4%B8%BB%E9%94%AE%E7%9A%84%E8%AE%BE%E8%AE%A1%E9%97%AE%E9%A2%98/'>
+          <p class='title'>主键的设计问题<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+          <p class='content'>事实上在这之前我一直觉得，设计表结构的时候，只要挑选其中一个不会有重复值且非空的字段作为主键就可以了，在看到某些表结构中，虽然已经有符合主键特性的字段了，但依旧会特地去加一个id字段作为主键（当...</p>
+        </a>
+      
+    </div>
+  
+</article>
+
+
+  
+
+  <article class="post white-box reveal shadow" id="comments">
+    <p ct><i class='fas fa-comments'></i> 评论</p>
+    
+    <div id="valine_container" class="valine_thread">
+  <i class="fas fa-cog fa-spin fa-fw fa-2x"></i>
+</div>
+
+  </article>
+
+
+
+
+
+
 </div>
 <aside class='l_side'>
   
+  
+    
+    
+
+
+
+  <section class="widget toc-wrapper shadow desktop mobile" id="toc-div" >
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">数据类型</span></a></li></ol>
+    </div>
+  </section>
+
+
+  
+
   
     
     
@@ -581,6 +760,7 @@
 </aside>
 
 
+
         
         
           <!--此文件用来存放一些不方便取值的变量-->
@@ -588,14 +768,14 @@
 
 <script>
   window.pdata={}
-  pdata.ispage=false;
-  pdata.postTitle="";
+  pdata.ispage=true;
+  pdata.postTitle="我终于开始搞redis了";
   pdata.commentPath="";
   pdata.commentPlaceholder="";
 
   var l_header=document.getElementById("l_header");
   
-  l_header.classList.remove("show");
+  l_header.classList.add("show");
   
 </script>
 
