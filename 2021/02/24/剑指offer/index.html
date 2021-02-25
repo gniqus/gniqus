@@ -24,7 +24,7 @@
 
   
     <meta name="description" content="两个月前就已经刷过一边剑指offer了，跳过了几道自己觉得很刁钻的题目，整体感觉就是题目不算多，大部分也都比较经典。自己大概四五天就差不多刷完了。现在备战暑期实习准备再认真刷一边，并且好好记录下来，这样秋招前就可以挑自己掌握不好的题目做了！
-立个falg：1天1道每日一题+至少1道剑指offer！">
+立个flag：1天1道每日一题+至少1道剑指offer！">
   
 
   <!-- feed -->
@@ -456,10 +456,10 @@
 
   
   <p>两个月前就已经刷过一边剑指offer了，跳过了几道自己觉得很刁钻的题目，整体感觉就是题目不算多，大部分也都比较经典。自己大概四五天就差不多刷完了。现在备战暑期实习准备再认真刷一边，并且好好记录下来，这样秋招前就可以挑自己掌握不好的题目做了！</p>
-<p>立个falg：1天1道每日一题+至少1道剑指offer！</p>
+<p>立个flag：1天1道每日一题+至少1道剑指offer！</p>
 <a id="more"></a>
 
-<h2 id="2-24-pday832-amp-lcof03"><a href="#2-24-pday832-amp-lcof03" class="headerlink" title="2/24 pday832 &amp; lcof03"></a>2/24 pday832 &amp; lcof03</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/flipping-an-image/">pday832</a>: done not best<br><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/">lcof003</a>: done not best</p>
+<h2 id="2-24-pday832-amp-lcof003"><a href="#2-24-pday832-amp-lcof003" class="headerlink" title="2/24 pday832 &amp; lcof003"></a>2/24 pday832 &amp; lcof003</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/flipping-an-image/">pday832 翻转图像</a>: done not best<br><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/">lcof003 数组中的重复数字</a>: done not best</p>
 <p>在一个长度为 n 的数组 nums 里的所有数字都在 0～n-1 的范围内。数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次。请找出数组中任意一个重复的数字。</p>
 <ol>
 <li>想法1：排序遍历 O(nlogn) + O(1)</li>
@@ -467,9 +467,18 @@
 <li>想法3：不可能有更优的了，我忽略了题目中的<strong>所有数字都在 0～n-1 的范围内。</strong></li>
 </ol>
 <p>最优解: 原地置换。若无重复数字，排序后数字i的下标为i。故遍历nums，若nums[i] = n != i，则swap(nums[i], nums[m])，交换过程中遇到重复数字即可返回。</p>
-<h3 id="精选题解"><a href="#精选题解" class="headerlink" title="精选题解"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/solution/yuan-di-jiao-huan-yi-jiao-huan-luo-bu-bi-gh5c/">精选题解</a></h3><p>所谓原地交换，就是如果发现这个坑里面的萝卜不是这个坑应该有的萝卜，就看看你是哪家的萝卜，然后把你送到哪家，再把你家里现在那个萝卜拿回来。</p>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/solution/yuan-di-jiao-huan-yi-jiao-huan-luo-bu-bi-gh5c/"><strong>精选题解</strong></a></p>
+<p>所谓原地交换，就是如果发现这个坑里面的萝卜不是这个坑应该有的萝卜，就看看你是哪家的萝卜，然后把你送到哪家，再把你家里现在那个萝卜拿回来。</p>
 <p>拿回来之后，再看看拿回来的这个萝卜应该是属于哪家的，再跟哪家交换。</p>
 <p>就这样交换萝卜，直到想把这个萝卜送回它家的时候，发现人家家里已经有了这个萝卜了（双胞胎啊），那这个萝卜就多余了，就把这个萝卜上交给国家。</p>
+<h2 id="2-25-pday867-amp-lcof004"><a href="#2-25-pday867-amp-lcof004" class="headerlink" title="2/25 pday867 &amp; lcof004"></a>2/25 pday867 &amp; lcof004</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/transpose-matrix/">pday867 转置矩阵</a>: done best<br><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/er-wei-shu-zu-zhong-de-cha-zhao-lcof/">lcof004 二维数组中的查找</a>: done best</p>
+<p>在一个 n * m 的二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个高效的函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。</p>
+<ol>
+<li>想法1：这题我做过，可以O(n + m)</li>
+</ol>
+<p>最优解: 线性查找。从右上角开始，大了就向左，小了就向下。</p>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/er-wei-shu-zu-zhong-de-cha-zhao-lcof/solution/mian-shi-ti-04-er-wei-shu-zu-zhong-de-cha-zhao-b-3/261298"><strong>精选题解</strong></a></p>
+<p>类似于二叉排序树，左上都是小的，右下都是大的。</p>
 
   
   
@@ -500,10 +509,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-02-24T23:49:19+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-02-25T23:36:28+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Feb 24, 2021</p>
+    <p>更新于：Feb 25, 2021</p>
   </a>
 </div>
 
@@ -523,7 +532,7 @@
         <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
           
           target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://example.com/2021/02/24/%E5%89%91%E6%8C%87offer/&title=剑指offer - gniqus&summary=两个月前就已经刷过一边剑指offer了，跳过了几道自己觉得很刁钻的题目，整体感觉就是题目不算多，大部分也都比较经典。自己大概四五天就差不多刷完了。现在备战暑期实习准备再认真刷一边，并且好好记录下来，这样秋招前就可以挑自己掌握不好的题目做了！
-立个falg：1天1道每日一题+至少1道剑指offer！"
+立个flag：1天1道每日一题+至少1道剑指offer！"
           
           >
           
@@ -536,7 +545,7 @@
         <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
           
           target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://example.com/2021/02/24/%E5%89%91%E6%8C%87offer/&title=剑指offer - gniqus&summary=两个月前就已经刷过一边剑指offer了，跳过了几道自己觉得很刁钻的题目，整体感觉就是题目不算多，大部分也都比较经典。自己大概四五天就差不多刷完了。现在备战暑期实习准备再认真刷一边，并且好好记录下来，这样秋招前就可以挑自己掌握不好的题目做了！
-立个falg：1天1道每日一题+至少1道剑指offer！"
+立个flag：1天1道每日一题+至少1道剑指offer！"
           
           >
           
@@ -549,7 +558,7 @@
         <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
           
           target="_blank" href="http://service.weibo.com/share/share.php?url=http://example.com/2021/02/24/%E5%89%91%E6%8C%87offer/&title=剑指offer - gniqus&summary=两个月前就已经刷过一边剑指offer了，跳过了几道自己觉得很刁钻的题目，整体感觉就是题目不算多，大部分也都比较经典。自己大概四五天就差不多刷完了。现在备战暑期实习准备再认真刷一边，并且好好记录下来，这样秋招前就可以挑自己掌握不好的题目做了！
-立个falg：1天1道每日一题+至少1道剑指offer！"
+立个flag：1天1道每日一题+至少1道剑指offer！"
           
           >
           
@@ -625,7 +634,7 @@
 
 
     <div class='content'>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-24-pday832-amp-lcof03"><span class="toc-text">2&#x2F;24 pday832 &amp; lcof03</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B2%BE%E9%80%89%E9%A2%98%E8%A7%A3"><span class="toc-text">精选题解</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-24-pday832-amp-lcof003"><span class="toc-text">2&#x2F;24 pday832 &amp; lcof003</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-25-pday867-amp-lcof004"><span class="toc-text">2&#x2F;25 pday867 &amp; lcof004</span></a></li></ol>
     </div>
   </section>
 

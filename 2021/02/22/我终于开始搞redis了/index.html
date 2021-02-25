@@ -464,6 +464,8 @@
 <li>string: set | get | setex | setnx | incr | incrby</li>
 <li>hash: hset | hget | hdel | hmset | hmget</li>
 <li>list: rpush | lpush | lrange | lrem</li>
+<li>set: sadd | scard | smembers</li>
+<li>sorted set: zadd | zrange</li>
 </ol>
 <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ol>
 <li>String</li>
@@ -475,6 +477,20 @@
 <li>Hyperloglog</li>
 <li>Geospatial Index</li>
 <li>Stream</li>
+</ol>
+<h2 id="持久化策略"><a href="#持久化策略" class="headerlink" title="持久化策略"></a>持久化策略</h2><p>redis每次启动时都会从硬盘存储文件中把数据读取到内存中，运行过程中操作的数据都是内存中的数据。</p>
+<ol>
+<li>RDB(Redis DataBase)</li>
+</ol>
+<p>默认的持久化策略，在指定的时间间隔内生成数据快照，默认保存到dump.rdb文件中。当redis重启后会自动加载dump.rdb文件中内容到内存中。</p>
+<p>用户可以使用SAVE（同步）或BGSAVE（异步）手动保存数据。</p>
+<p>BGSAVE是命令手动敲进去就可以了。SAVE需要在服务器配置SAVE选项，让服务器每隔一段时间自动执行一次BGSAVE命令，可以通过SAVE选项设置多个保存条件，但只要其中任意一个条件被满足，服务器就会执行BGSAVE命令。SAVE P X表示P秒内执行了X次修改。</p>
+<p><strong>优点：性能更高</strong></p>
+<p>rdb文件是一个紧凑文件，直接使用rdb文件就可以还原数据；数据会由一个子进程进行保存，不影响父进程；恢复数据的效率要高于AOF。</p>
+<p><strong>缺点：数据丢失</strong></p>
+<p>每个SAVE时间段内的redis的故障可能会丢失数据；由于每次保存数据都需要fork子进程，数据量较大时比较耗费性能。</p>
+<ol start="2">
+<li>AOF(AppendOnly File)</li>
 </ol>
 
   
@@ -506,10 +522,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-02-24T23:13:41+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-02-25T23:10:15+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Feb 24, 2021</p>
+    <p>更新于：Feb 25, 2021</p>
   </a>
 </div>
 
@@ -633,7 +649,7 @@
 
 
     <div class='content'>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">数据类型</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96%E7%AD%96%E7%95%A5"><span class="toc-text">持久化策略</span></a></li></ol>
     </div>
   </section>
 
