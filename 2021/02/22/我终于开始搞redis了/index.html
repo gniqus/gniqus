@@ -484,6 +484,7 @@
 </ol>
 <p>默认的持久化策略，在指定的时间间隔内生成数据快照，默认保存到dump.rdb文件中。当redis重启后会自动加载dump.rdb文件中内容到内存中。</p>
 <p>用户可以使用SAVE（同步）或BGSAVE（异步）手动保存数据。</p>
+<p>BGSAVEfork了子进程生成快照，生成过程中采用了与父进程采用了读时共享，写时复制的策略。</p>
 <p>BGSAVE是命令手动敲进去就可以了。SAVE需要在服务器配置SAVE选项，让服务器每隔一段时间自动执行一次BGSAVE命令，可以通过SAVE选项设置多个保存条件，但只要其中任意一个条件被满足，服务器就会执行BGSAVE命令。SAVE P X表示P秒内执行了X次修改。</p>
 <p><strong>优点：性能更高</strong></p>
 <p>rdb文件是一个紧凑文件，直接使用rdb文件就可以还原数据；数据会由一个子进程进行保存，不影响父进程；恢复数据的效率要高于AOF。</p>
@@ -492,6 +493,33 @@
 <ol start="2">
 <li>AOF(AppendOnly File)</li>
 </ol>
+<p>默认关闭，需要在配置文件中开启，若rdb与aof全部开启，默认使用aof恢复数据。aof原理是记录修改数据的命令到aof文件中，恢复时执行这些命令即可恢复数据。</p>
+<p><strong>优点：数据安全</strong></p>
+<p>因为每一条修改数据的命令都记录下来了，所以相较于rdb更加安全。</p>
+<p><strong>缺点：性能更低</strong></p>
+<p>需要去做磁盘IO，并且相同数据量下aof文件要比rdb文件更大。</p>
+<h2 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h2><p>一般读的压力会比写大一些，所以有了一主多从的模式，主服务器主要用来写，从服务器主要用来读（默认只读）。从服务器的存在也提升了redis的容灾能力。</p>
+<p><strong>全量同步</strong></p>
+<ol>
+<li>从服务器发送SYNC，主服务器收到后执行BGSAVE生成RDB文件，并使用缓冲区记录此后所有的写命令。</li>
+<li>BGSAVE执行完毕后，向所有的从服务器发送RDB文件，并在发送期间继续在缓冲区记录执行的写命令。</li>
+<li>从服务器收到RDB文件后丢弃所有旧数据，载入新数据。主服务器RDB文件发送完毕后向从服务器发送缓冲区中的写命令。</li>
+<li>从服务器完成新数据的载入，开始接主服务器发来的写命令并执行。</li>
+</ol>
+<p><strong>增量同步</strong></p>
+<p>主从刚刚连接时进行全量同步，全量同步结束后进行增量同步，即主服务器发生的每一个写操作都会同步到从服务器。</p>
+<p><strong>注意事项</strong></p>
+<ul>
+<li>如果多个从服务器掉线了，重启的时候就会发送多个SYNC请求全量同步，可能会导致主服务器宕机。</li>
+<li>从服务器除了可以连接到主服务器外，也可以连接到其他的从服务器。</li>
+<li>主从复制不会阻塞主服务器，也不会阻塞从服务器。从服务器进行同步时，使用旧数据来应对查询请求。但是在删除旧数据和装载新数据这期间内会阻塞查询请求。</li>
+<li>从服务器可以代替主服务器做数据持久化的工作，免去了主服务器把数据写到磁盘的消耗。</li>
+</ul>
+<h2 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h2><p>使用缓存是为了减少对数据库的访问，但肯定也会有redis中不存在的数据，缓存穿透即绕过redis频繁访问数据库的情况，多出现在value为null，每次访问都没有缓存到redis的原因。</p>
+<p>解决办法就是即便数据库查出来value为null也缓存到redis中，同时设置该key的过期时间较正常数据略短一些。</p>
+<h2 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h2><p>实际开发中redis中的数据都会设置过期时间的，如果刚好key过期时出现了大量的并发访问，那么这些访问都会流向数据库，这种情况称为缓存击穿。</p>
+<p>解决办法一是设置redis中的key是永久的，二是加锁防止数据库的并发访问。</p>
+<h2 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h2><p>多个key同时过期又赶上高并发访问就是缓存雪崩（比如说同时缓存了很多的数据，过期也同时过期）。解决办法一是设置永久有效，二是自定义算法尽量避免让失效在同一时间发生。</p>
 
   
   
@@ -522,10 +550,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-02-25T23:10:15+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-04T23:55:46+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Feb 25, 2021</p>
+    <p>更新于：Mar 4, 2021</p>
   </a>
 </div>
 
@@ -649,7 +677,7 @@
 
 
     <div class='content'>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96%E7%AD%96%E7%95%A5"><span class="toc-text">持久化策略</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96%E7%AD%96%E7%95%A5"><span class="toc-text">持久化策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="toc-text">主从复制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="toc-text">缓存穿透</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="toc-text">缓存击穿</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="toc-text">缓存雪崩</span></a></li></ol>
     </div>
   </section>
 
