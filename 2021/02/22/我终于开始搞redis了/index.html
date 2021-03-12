@@ -478,6 +478,35 @@
 <li>Geospatial Index</li>
 <li>Stream</li>
 </ol>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><ol>
+<li>简单动态字符串</li>
+</ol>
+<p>redis的key总是string类型的，string没有使用c字符串，而是自己实现了sds数据结构，意为Simple dynamic String，sds的结构定义如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span>  len;</span><br><span class="line">    <span class="keyword">int</span>  <span class="built_in">free</span>;</span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>sds同样采用’\0’作为结尾，不算在len中，free是可用的剩余空间，实际空间 = len + free + 1。</p>
+<p>为什么自己定义一个字符串数据结构？</p>
+<p>c字符串的strlen操作每次都要遍历计算长度，而sds是不用的。</p>
+<p>c字符串的cat操作容易造成缓冲区溢出，而sds在执行cat操作时会判断free是否足够。</p>
+<p>c字符串底层实现永远都是一个len+1的数组，所以每一次修改都会导致内存重分配，而sds采用了空间预分配和惰性空间释放两种优化策略。</p>
+<blockquote>
+<p>空间预分配：修改后小于1MB，则分配两倍的空间。大于1MB则多分配1MB的空间。</p>
+<p>惰性空间释放：修改后有空闲空间就加到free上，不回收。sds也提供了相应api用于释放free，所以不需要担心内存浪费的问题。</p>
+</blockquote>
+<p>c字符串是不能保存”hello\0world\0”的，但是sds可以，sds是二进制安全的，本质是[]byte，不以\0作为结束，不仅可以保存字符，也可以保存二进制数据。</p>
+<p>sds用\0结束是为了兼容string.h的函数，避免了不必要的代码重复。</p>
+<p><img src="/img/sds.png" class="lazyload" data-srcset="/img/sds.png" srcset="data:image/png;base64,666"></p>
+<ol start="2">
+<li>链表</li>
+</ol>
+<p>链表被广泛用于实现redis的各种功能，如列表、发布与订阅、慢查询、监视器等。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> &#123;</span></span><br><span class="line">    listNode* prev;</span><br><span class="line">    listNode* next;</span><br><span class="line">    <span class="keyword">void</span>* value;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list</span> &#123;</span></span><br><span class="line">    listNode* head;</span><br><span class="line">    listNode* tail;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> len;</span><br><span class="line">    <span class="keyword">void</span>* (*dup) (<span class="keyword">void</span>* ptr);   <span class="comment">// 用于复制链表结点所保存的值</span></span><br><span class="line">    <span class="keyword">void</span> (*<span class="built_in">free</span>) (<span class="keyword">void</span>* ptr);   <span class="comment">// 用于释放链表节点锁保存的值</span></span><br><span class="line">    <span class="keyword">int</span> (*match) (<span class="keyword">void</span>* ptr, <span class="keyword">void</span> *key);    <span class="comment">// 用于对比链表结点所保存的值和另一个输入值是否相等</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>链表特性总结：双端、无环（头节点prev与尾节点next为空）、有头有尾、O(1)取长度、利用void*保存节点的值，通过不同的dup、free、match函数来实现多态。</p>
+<ol start="3">
+<li>字典</li>
+</ol>
+<p>redis的字典用于kv存储实现和集合的实现，底层是使用哈希表。</p>
+<p>```C<br>struct dictht {             // 字典<br>    dictEntry** table;      // 哈希表数组<br>    unsigned long size;     // 哈希表大小<br>    unsigned long sizemask; // 哈希表大小掩码，用于计算索引值，总是等于size-1<br>    unsigned long used;     // 哈希表已有节点数量<br>};</p>
+<p>struct dictEntry {          // 哈希表节点<br>    void* key;              // 键<br>    union {<br>        void* val;<br>        uint64_t u64;<br>        int64_t s64;<br>    } v;                    // 值<br>    dictEntry* next;        // 下一个哈希表节点，用来解决哈希碰撞的<br>};</p>
 <h2 id="持久化策略"><a href="#持久化策略" class="headerlink" title="持久化策略"></a>持久化策略</h2><p>redis每次启动时都会从硬盘存储文件中把数据读取到内存中，运行过程中操作的数据都是内存中的数据。</p>
 <ol>
 <li>RDB(Redis DataBase)</li>
@@ -550,10 +579,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-04T23:55:46+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-12T21:07:35+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Mar 4, 2021</p>
+    <p>更新于：Mar 12, 2021</p>
   </a>
 </div>
 
@@ -677,7 +706,7 @@
 
 
     <div class='content'>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96%E7%AD%96%E7%95%A5"><span class="toc-text">持久化策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="toc-text">主从复制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="toc-text">缓存穿透</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="toc-text">缓存击穿</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="toc-text">缓存雪崩</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-text">数据结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96%E7%AD%96%E7%95%A5"><span class="toc-text">持久化策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="toc-text">主从复制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="toc-text">缓存穿透</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="toc-text">缓存击穿</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="toc-text">缓存雪崩</span></a></li></ol>
     </div>
   </section>
 
