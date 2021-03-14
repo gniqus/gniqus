@@ -478,10 +478,8 @@
 <li>Geospatial Index</li>
 <li>Stream</li>
 </ol>
-<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><ol>
-<li>简单动态字符串</li>
-</ol>
-<p>redis的key总是string类型的，string没有使用c字符串，而是自己实现了sds数据结构，意为Simple dynamic String，sds的结构定义如下。</p>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p><img src="/img/ds.png" class="lazyload" data-srcset="/img/ds.png" srcset="data:image/png;base64,666"></p>
+<h3 id="简单动态字符串"><a href="#简单动态字符串" class="headerlink" title="简单动态字符串"></a>简单动态字符串</h3><p>redis的key总是string类型的，string没有使用c字符串，而是自己实现了sds数据结构，意为Simple dynamic String，sds的结构定义如下。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span>  len;</span><br><span class="line">    <span class="keyword">int</span>  <span class="built_in">free</span>;</span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>sds同样采用’\0’作为结尾，不算在len中，free是可用的剩余空间，实际空间 = len + free + 1。</p>
 <p>为什么自己定义一个字符串数据结构？</p>
@@ -495,18 +493,31 @@
 <p>c字符串是不能保存”hello\0world\0”的，但是sds可以，sds是二进制安全的，本质是[]byte，不以\0作为结束，不仅可以保存字符，也可以保存二进制数据。</p>
 <p>sds用\0结束是为了兼容string.h的函数，避免了不必要的代码重复。</p>
 <p><img src="/img/sds.png" class="lazyload" data-srcset="/img/sds.png" srcset="data:image/png;base64,666"></p>
-<ol start="2">
-<li>链表</li>
-</ol>
-<p>链表被广泛用于实现redis的各种功能，如列表、发布与订阅、慢查询、监视器等。</p>
+<h3 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h3><p>链表被广泛用于实现redis的各种功能，如列表、发布与订阅、慢查询、监视器等。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> &#123;</span></span><br><span class="line">    listNode* prev;</span><br><span class="line">    listNode* next;</span><br><span class="line">    <span class="keyword">void</span>* value;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">list</span> &#123;</span></span><br><span class="line">    listNode* head;</span><br><span class="line">    listNode* tail;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> len;</span><br><span class="line">    <span class="keyword">void</span>* (*dup) (<span class="keyword">void</span>* ptr);   <span class="comment">// 用于复制链表结点所保存的值</span></span><br><span class="line">    <span class="keyword">void</span> (*<span class="built_in">free</span>) (<span class="keyword">void</span>* ptr);   <span class="comment">// 用于释放链表节点锁保存的值</span></span><br><span class="line">    <span class="keyword">int</span> (*match) (<span class="keyword">void</span>* ptr, <span class="keyword">void</span> *key);    <span class="comment">// 用于对比链表结点所保存的值和另一个输入值是否相等</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>链表特性总结：双端、无环（头节点prev与尾节点next为空）、有头有尾、O(1)取长度、利用void*保存节点的值，通过不同的dup、free、match函数来实现多态。</p>
-<ol start="3">
-<li>字典</li>
-</ol>
-<p>redis的字典用于kv存储实现和集合的实现，底层是使用哈希表。</p>
-<p>```C<br>struct dictht {             // 字典<br>    dictEntry** table;      // 哈希表数组<br>    unsigned long size;     // 哈希表大小<br>    unsigned long sizemask; // 哈希表大小掩码，用于计算索引值，总是等于size-1<br>    unsigned long used;     // 哈希表已有节点数量<br>};</p>
-<p>struct dictEntry {          // 哈希表节点<br>    void* key;              // 键<br>    union {<br>        void* val;<br>        uint64_t u64;<br>        int64_t s64;<br>    } v;                    // 值<br>    dictEntry* next;        // 下一个哈希表节点，用来解决哈希碰撞的<br>};</p>
+<h3 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h3><p>redis的字典用于kv存储实现和集合的实现，底层是使用哈希表。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> &#123;</span>             <span class="comment">// 哈希表</span></span><br><span class="line">    dictEntry** table;      <span class="comment">// 哈希表数组</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> size;     <span class="comment">// 哈希表大小</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> sizemask; <span class="comment">// 哈希表大小掩码，用于计算索引值，总是等于size-1</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> used;     <span class="comment">// 哈希表已有节点数量</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> &#123;</span>          <span class="comment">// 哈希表节点</span></span><br><span class="line">    <span class="keyword">void</span>* key;              <span class="comment">// 键</span></span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span>                 </span><br><span class="line">        <span class="keyword">void</span>* val;</span><br><span class="line">        <span class="keyword">uint64_t</span> u64;</span><br><span class="line">        <span class="keyword">int64_t</span> s64;</span><br><span class="line">    &#125; v;                    <span class="comment">// 值</span></span><br><span class="line">    dictEntry* next;        <span class="comment">// 下一个哈希表节点，用来解决哈希碰撞的</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">dict</span> &#123;</span>               <span class="comment">// 字典</span></span><br><span class="line">    dictType* type;         <span class="comment">// 保存了一系列用于操作特定类型键值对的函数</span></span><br><span class="line">    <span class="keyword">void</span>* privdata;         <span class="comment">// 私有数据</span></span><br><span class="line">    dictht ht[<span class="number">2</span>];           <span class="comment">// 一般只使用ht[0]哈希表，ht[1]只会在对ht[0]进行rehash时使用，rehash后两个ht对调</span></span><br><span class="line">    <span class="keyword">int</span> rehashidx;          <span class="comment">// rehash索引，当rehash不在进行时，值为-1</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>随着操作的不断执行，哈希表保存的键值会逐渐的增多或减少，为了让哈希表的负载因子（所有节点数/长度）维持在一个合理范围内，需要对哈希表的大小进行扩展或收缩，即重新散列，rehash的过程是渐近的，即渐进式rehash，数据从ht[0]迁移到ht[1]，这个过程中新增的数据记录到ht[1]上，迁移完成后，ht[0]就变成了备用哈希表留待下一次rehash使用。</p>
+<p><img src="/img/dict.png" class="lazyload" data-srcset="/img/dict.png" srcset="data:image/png;base64,666"></p>
+<h3 id="跳跃表"><a href="#跳跃表" class="headerlink" title="跳跃表"></a>跳跃表</h3><p>跳跃表是一种有序数据结构，支持平均O(logN)，最坏O(N)复杂度的节点查找，还可以通过顺序性操作批量处理节点。</p>
+<p>redis使用跳跃表作为有序集合的底层数据结构之一，当有序集合包含元素数量较多，又或者元素是比较长的字符串时，就会采用跳跃表实现有序集合。除此之外，redis还会在集群节点中用作内部数据结构。</p>
+<p><img src="/img/skiplist.png" class="lazyload" data-srcset="/img/skiplist.png" srcset="data:image/png;base64,666"></p>
+<p>跳跃表结构记录了头尾节点、最高索引级别（不包括头节点）、节点数量（不包括头节点）。头节点是一个虚假节点，只用来作为链表的开始，有32级索引，后退指针、权值、对象指针不会被用到。</p>
+<p>表节点结构的索引层数是一个1-32的随机数，数字越大出现的概率越小，每级索引指向下一个具有同级索引的节点，和与该节点的距离。后退指针用于反向遍历，所以跳跃表也是一个双向链表。节点间根据权值排序，权值相同按照对象的排序规则排序。</p>
+<p>节点间的权值可以相同，但是保存的对象必须是唯一的。</p>
+<h3 id="整数集合"><a href="#整数集合" class="headerlink" title="整数集合"></a>整数集合</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">intset</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> encoding;  <span class="comment">// 编码方式</span></span><br><span class="line">    <span class="keyword">uint32_t</span> length;    <span class="comment">// 集合包含的元素的数量</span></span><br><span class="line">    <span class="keyword">int8_t</span> contents[];  <span class="comment">// 保存元素的数组</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>整数集合是集合的底层实现之一，本质是有序无重复的数组。</p>
+<p>虽然contents[]的类型是int8_t，但是也可以存int16_t、int32_t、int64_t，具体如何解释需要看encoding字段。如果原本contents都是int8，要新加一个int64，则会进行升级操作，重新开辟足够的空间，并且每一个元素都会变成int64类型。</p>
+<p>同时整数集合不支持降级的操作，哪怕之后该新增的int64类型数据被删除了，也不会发生降级的操作。</p>
+<h3 id="压缩列表"><a href="#压缩列表" class="headerlink" title="压缩列表"></a>压缩列表</h3><p>压缩列表是列表和哈希的底层数据结构之一，当一个列表只包含少量元素，且每个元素都是小整数值或短字符串，那么redis就会使用压缩列表作为列表的数据结构。</p>
+<p><img src="/img/ziplist.png" class="lazyload" data-srcset="/img/ziplist.png" srcset="data:image/png;base64,666"></p>
+<p>每一个entry由三部分构成：previous_entry_length、encoding、content，分别表示上一个节点的长度，当前节点的类型，当前节点的值，通过previous_entry_length可以反向遍历压缩列表。</p>
+<p>如果上一个节点的长度小于254字节，previous_entry_length只需要1字节的空间，否则需要5字节的空间，这就导致了压缩列表在添加或删除节点时会导致节点的连锁更新。</p>
+<p>压缩列表之所以节省内存体现在encoding上，下面的图片是不同encoding编码对应的不同类型。</p>
+<p><img src="/img/encoding.png" class="lazyload" data-srcset="/img/encoding.png" srcset="data:image/png;base64,666"></p>
+<p>如果是正常的数组，每个元素占有的空间大小是一样的，对标最大元素的空间，但是在压缩列表中，不同大小的元素都有不同大小的空间，故而节约了内存。</p>
+<p><img src="/img/ziplist2.png" class="lazyload" data-srcset="/img/ziplist2.png" srcset="data:image/png;base64,666"></p>
 <h2 id="持久化策略"><a href="#持久化策略" class="headerlink" title="持久化策略"></a>持久化策略</h2><p>redis每次启动时都会从硬盘存储文件中把数据读取到内存中，运行过程中操作的数据都是内存中的数据。</p>
 <ol>
 <li>RDB(Redis DataBase)</li>
@@ -579,10 +590,10 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-12T21:07:35+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-14T18:48:27+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Mar 12, 2021</p>
+    <p>更新于：Mar 14, 2021</p>
   </a>
 </div>
 
@@ -706,7 +717,7 @@
 
 
     <div class='content'>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-text">数据结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96%E7%AD%96%E7%95%A5"><span class="toc-text">持久化策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="toc-text">主从复制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="toc-text">缓存穿透</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="toc-text">缓存击穿</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="toc-text">缓存雪崩</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-text">数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-text">简单动态字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E8%A1%A8"><span class="toc-text">链表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E5%85%B8"><span class="toc-text">字典</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%B3%E8%B7%83%E8%A1%A8"><span class="toc-text">跳跃表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88"><span class="toc-text">整数集合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8"><span class="toc-text">压缩列表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96%E7%AD%96%E7%95%A5"><span class="toc-text">持久化策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="toc-text">主从复制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="toc-text">缓存穿透</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="toc-text">缓存击穿</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="toc-text">缓存雪崩</span></a></li></ol>
     </div>
   </section>
 
