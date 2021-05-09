@@ -475,6 +475,8 @@
 <p>8.8.8.8就是一个DNS服务器，属于Google公司，位于美国。</p>
 <p><strong>一些命令</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ipconfig &#x2F;all               # &#x2F;all可以看到DNS等详细信息</span><br><span class="line"></span><br><span class="line">ping -t www.qq.com          # 一直ping</span><br><span class="line">ping -n 1 www.qq.com        # 发n个包</span><br><span class="line">ping -l 65500 www.qq.com    # 一个包多少字节</span><br><span class="line"></span><br><span class="line">nslookup www.qq.com         # 解析IP地址</span><br></pre></td></tr></table></figure>
+<p>ping不通不代表对方一定不在线，也可能对方开防火墙了。ping通了也不代表对方一定没开防火墙，可能是防火墙允许ping操作。</p>
+
   
   
     
@@ -504,7 +506,7 @@
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-05-10T00:47:10+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-05-10T00:50:35+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
     <p>更新于：May 10, 2021</p>
